@@ -1,13 +1,16 @@
+using GerenciamentoUsuarios.API.Services;
 using GerenciamentoUsuarios.Core.Contexts;
 using GerenciamentoUsuarios.Core.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
+using System.Text;
 
 namespace GerenciamentoUsuarios.API
 {
@@ -25,11 +28,34 @@ namespace GerenciamentoUsuarios.API
 
             services.AddControllers();
 
+            services.AddScoped<JwtService>();
+
             services.AddDbContext<DefaultContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<Usuario, Funcao>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<DefaultContext>();
+
+            // Configuração do JWT
+            var jwtSettings = Configuration.GetSection("JwtSettings");
+            string secret = jwtSettings.GetValue<string>("Secret");
+            string issuer = jwtSettings.GetValue<string>("Issuer");
+            string audience = jwtSettings.GetValue<string>("Audience");
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = issuer,
+                        ValidAudience = audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+                    };
+                });
 
             services.AddSwaggerGen(c =>
             {
@@ -50,6 +76,7 @@ namespace GerenciamentoUsuarios.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
