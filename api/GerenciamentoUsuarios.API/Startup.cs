@@ -37,10 +37,10 @@ namespace GerenciamentoUsuarios.API
                 .AddEntityFrameworkStores<DefaultContext>();
 
             // Configuração do JWT
-            var jwtSettings = Configuration.GetSection("JwtSettings");
-            string secret = jwtSettings.GetValue<string>("Secret");
-            string issuer = jwtSettings.GetValue<string>("Issuer");
-            string audience = jwtSettings.GetValue<string>("Audience");
+            var configuracoesJWT = Configuration.GetSection("JwtSettings");
+            string secret = configuracoesJWT.GetValue<string>("Secret");
+            string issuer = configuracoesJWT.GetValue<string>("Issuer");
+            string audience = configuracoesJWT.GetValue<string>("Audience");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

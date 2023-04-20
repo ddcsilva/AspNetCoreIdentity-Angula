@@ -2,7 +2,7 @@
 
 namespace GerenciamentoUsuarios.API.ViewModels
 {
-    public class RegisterModel
+    public class RegistroModel
     {
         [Required]
         public string UserName { get; set; }

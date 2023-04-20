@@ -9,21 +9,21 @@ namespace GerenciamentoUsuarios.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AutenticacaoController : ControllerBase
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
         private readonly JwtService _jwtService;
 
-        public AuthController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, JwtService jwtService)
+        public AutenticacaoController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, JwtService jwtService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        [HttpPost("registrar")]
+        public async Task<IActionResult> Registrar([FromBody] RegistroModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -51,8 +51,8 @@ namespace GerenciamentoUsuarios.API.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        [HttpPost("entrar")]
+        public async Task<IActionResult> Entrar([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
             {
