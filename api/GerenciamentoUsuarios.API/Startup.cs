@@ -23,20 +23,24 @@ namespace GerenciamentoUsuarios.API
 
         public IConfiguration Configuration { get; }
 
+        // Configurar os serviços necessários para a aplicação
         public void ConfigureServices(IServiceCollection services)
         {
 
             services.AddControllers();
 
+            // Adicionar o JwtService como um serviço com escopo
             services.AddScoped<JwtService>();
 
+            // Configurar o DbContext
             services.AddDbContext<DefaultContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            // Configurar o Identity
             services.AddIdentity<Usuario, Funcao>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<DefaultContext>();
 
-            // Configuração do JWT
+            // Configurar a autenticação JWT
             var configuracoesJWT = Configuration.GetSection("JwtSettings");
             string secret = configuracoesJWT.GetValue<string>("Secret");
             string issuer = configuracoesJWT.GetValue<string>("Issuer");
@@ -63,6 +67,7 @@ namespace GerenciamentoUsuarios.API
             });
         }
 
+        // Configurar o pipeline de solicitação
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

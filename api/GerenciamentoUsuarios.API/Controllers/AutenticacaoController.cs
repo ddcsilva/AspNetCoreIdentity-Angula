@@ -11,8 +11,13 @@ namespace GerenciamentoUsuarios.API.Controllers
     [ApiController]
     public class AutenticacaoController : ControllerBase
     {
+        // UserManager ajuda a gerenciar os usuários do Identity
         private readonly UserManager<Usuario> _userManager;
+
+        // SignInManager ajuda no processo de autenticação e login do usuário
         private readonly SignInManager<Usuario> _signInManager;
+
+        // JwtService é um serviço personalizado para gerar tokens JWT
         private readonly JwtService _jwtService;
 
         public AutenticacaoController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, JwtService jwtService)
@@ -22,6 +27,7 @@ namespace GerenciamentoUsuarios.API.Controllers
             _jwtService = jwtService;
         }
 
+        // Registrar um novo usuário
         [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] RegistroModel model)
         {
@@ -51,6 +57,7 @@ namespace GerenciamentoUsuarios.API.Controllers
             return BadRequest(ModelState);
         }
 
+        // Autenticar e entrar no sistema
         [HttpPost("entrar")]
         public async Task<IActionResult> Entrar([FromBody] LoginModel model)
         {
@@ -67,7 +74,7 @@ namespace GerenciamentoUsuarios.API.Controllers
 
                 if (result.Succeeded)
                 {
-                    var token = _jwtService.GenerateToken(user);
+                    var token = _jwtService.GerarToken(user);
                     return Ok(new { token });
                 }
             }

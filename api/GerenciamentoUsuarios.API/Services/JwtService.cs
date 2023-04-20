@@ -17,7 +17,8 @@ namespace GerenciamentoUsuarios.API.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(Usuario user)
+        // Gera um token JWT para um usuário autenticado
+        public string GerarToken(Usuario user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             string secret = jwtSettings.GetValue<string>("Secret");
